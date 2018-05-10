@@ -258,7 +258,7 @@ public class HttpDecoder {
         }
         String line = lineReader.readLine(buffer);
         while (line != null && !line.isEmpty()) {
-            HttpUtils.splitAndAddHeader(line, headers);
+            HttpUtils.splitAndAddHeader(line, headers, true);
             line = lineReader.readLine(buffer);
         }
 

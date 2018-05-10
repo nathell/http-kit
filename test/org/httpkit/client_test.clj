@@ -3,7 +3,6 @@
         [ring.adapter.jetty :only [run-jetty]]
         [org.httpkit.server :only [run-server]]
         org.httpkit.test-util
-        [clojure.string :only [split]]
         (compojure [core :only [defroutes GET PUT PATCH DELETE POST HEAD
                                 DELETE ANY context]]
                    [handler :only [site]]
@@ -348,8 +347,8 @@
   (let [resp @(http/get "http://localhost:4347/multi-header" {:headers {"foo" ["bar" "baz"], "eggplant" "quux"}})
         resp2 (clj-http/get "http://localhost:4347/multi-header" {:headers {"foo" ["bar" "baz"], "eggplant" "quux"}})]
     (is (= 200 (:status resp)))
-    (is (= 3 (count (split (-> resp :headers :x-method2) #","))))
-    (is (= 2 (count (split (-> resp :headers :x-method) #","))))
+    (is (= 3 (-> resp :headers :x-method2 count)))
+    (is (= 2 (-> resp :headers :x-method count)))
     (is (= 200 (:status resp2)))))
 
 (deftest test-headers-stringified

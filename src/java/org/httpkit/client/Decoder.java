@@ -149,7 +149,7 @@ public class Decoder {
     private void readHeaders(ByteBuffer buffer) throws LineTooLargeException, AbortException, ProtocolException {
         String line = lineReader.readLine(buffer);
         while (line != null && !line.isEmpty()) {
-            HttpUtils.splitAndAddHeader(line, headers);
+            HttpUtils.splitAndAddHeader(line, headers, false);
             line = lineReader.readLine(buffer);
         }
         if (line == null)

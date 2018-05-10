@@ -332,7 +332,7 @@ public class HttpUtils {
         System.err.print(str.getBuffer().toString());
     }
 
-    public static void splitAndAddHeader(String sb, Map<String, Object> headers) {
+    public static void splitAndAddHeader(String sb, Map<String, Object> headers, boolean joinStrings) {
         final int length = sb.length();
         int nameStart;
         int nameEnd;
@@ -362,12 +362,20 @@ public class HttpUtils {
         if (valueStart > valueEnd) { // ignore
             // logger.warn("header error: " + sb);
         } else {
-            String value = sb.substring(valueStart, valueEnd);
+            Object value = sb.substring(valueStart, valueEnd);
             key = key.toLowerCase();
             Object v = headers.get(key);
             if (v != null) {
-                // https://github.com/http-kit/http-kit/issues/108
-                value = v.toString() + "," + value;
+                if (joinStrings) {
+                    // https://github.com/http-kit/http-kit/issues/108
+                    value = v.toString() + "," + value;
+                } else {
+                    if (v instanceof String) {
+                        value = PersistentList.create(Arrays.asList(v, value));
+                    } else {
+                        value = ((ISeq)v).cons(value);
+                    }
+                }
             }
             headers.put(key, value);
         }
